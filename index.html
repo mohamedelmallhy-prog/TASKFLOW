@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f6fa">
+    <meta name="description" content="A thoughtful workspace for planning, prioritizing, and finishing your work.">
+    <title>TaskFlow — Work, in focus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+        <a class="brand" href="#" data-filter="all" aria-label="TaskFlow home">
+          <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+          <span class="brand-name">taskflow<span class="brand-period">.</span></span>
+        </a>
+        <button class="collapse-sidebar icon-button" id="collapse-sidebar" aria-label="Collapse sidebar" title="Collapse sidebar">‹</button>
+        <button class="sidebar-close icon-button" id="close-sidebar" aria-label="Close navigation">×</button>
+        <button class="primary-button sidebar-add" id="add-task-sidebar"><span class="plus-icon">+</span> New task <span class="shortcut">N</span></button>
+
+        <div class="nav-group">
+          <p class="nav-caption">WORKSPACE</p>
+          <nav class="nav-links">
+            <button class="nav-link active" data-filter="all" data-nav-key="dashboard"><span class="nav-icon">◫</span><span>Dashboard</span></button>
+            <button class="nav-link" data-filter="all" data-nav-key="mytasks"><span class="nav-icon">▤</span><span>My Tasks</span><span class="nav-count" id="my-task-count">0</span></button>
+            <button class="nav-link" data-filter="today"><span class="nav-icon">◷</span><span>Today</span></button>
+            <button class="nav-link" data-filter="upcoming"><span class="nav-icon">▦</span><span>Upcoming</span></button>
+            <button class="nav-link" data-filter="important"><span class="nav-icon">☆</span><span>Important</span></button>
+            <button class="nav-link" data-filter="completed"><span class="nav-icon">✓</span><span>Completed</span></button>
+          </nav>
+        </div>
+
+        <div class="nav-group categories-group">
+          <div class="nav-caption-row"><p class="nav-caption">CATEGORIES</p><button class="tiny-button" id="add-category" aria-label="Add category" title="Add category">+</button></div>
+          <nav class="nav-links category-links" id="category-links" aria-label="Task categories"></nav>
+        </div>
+
+        <div class="sidebar-bottom">
+          <button class="nav-link settings-link" data-page="settings"><span class="nav-icon">⚙</span><span>Settings</span></button>
+          <div class="profile">
+            <span class="avatar">A</span>
+            <span class="profile-copy"><strong>Alex Morgan</strong><small>Personal workspace</small></span>
+            <span class="profile-more">•••</span>
+          </div>
+        </div>
+      </aside>
+
+      <div class="mobile-scrim" id="mobile-scrim"></div>
+      <main class="main-content">
+        <header class="topbar">
+          <button class="icon-button menu-button" id="open-sidebar" aria-label="Open navigation">☰</button>
+          <div class="breadcrumb"><span>Workspace</span><span class="breadcrumb-slash">/</span><strong id="breadcrumb-current">Dashboard</strong></div>
+          <div class="topbar-actions">
+            <label class="global-search"><span aria-hidden="true">⌕</span><input type="search" id="search-input" placeholder="Search tasks..." aria-label="Search tasks"><kbd>⌘ K</kbd></label>
+            <button class="icon-button theme-button" id="theme-toggle" aria-label="Switch to dark mode" title="Switch theme">◐</button>
+            <button class="icon-button notification-button" id="notification-button" aria-label="Notifications"><span>♧</span><i></i></button>
+            <button class="primary-button top-add" id="add-task-top"><span>+</span> Add task</button>
+          </div>
+        </header>
+
+        <section class="page-view" id="dashboard-page">
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow" id="current-date"></p>
+              <h1 id="greeting">Good morning, Alex <span class="wave">✦</span></h1>
+              <p class="subheading">Here's what's happening with your projects today.</p>
+            </div>
+            <button class="primary-button heading-add" id="add-task-heading"><span>+</span> Create a task</button>
+          </div>
+
+          <section class="stats-grid" aria-label="Task statistics">
+            <article class="stat-card stat-total"><div class="stat-top"><span>Total tasks</span><span class="stat-icon violet">▤</span></div><div class="stat-value" id="stat-total">0</div><div class="stat-foot"><span class="stat-dot violet-dot"></span><span>Across all your work</span></div></article>
+            <article class="stat-card"><div class="stat-top"><span>In progress</span><span class="stat-icon blue">◷</span></div><div class="stat-value" id="stat-progress">0</div><div class="stat-foot"><span class="stat-dot blue-dot"></span><span>Tasks underway</span></div></article>
+            <article class="stat-card"><div class="stat-top"><span>Completed</span><span class="stat-icon green">✓</span></div><div class="stat-value" id="stat-completed">0</div><div class="stat-foot"><span class="stat-dot green-dot"></span><span>Nice work, keep it up</span></div></article>
+            <article class="stat-card"><div class="stat-top"><span>Overdue</span><span class="stat-icon red">!</span></div><div class="stat-value" id="stat-overdue">0</div><div class="stat-foot"><span class="stat-dot red-dot"></span><span>Need your attention</span></div></article>
+          </section>
+
+          <section class="analytics-grid" aria-label="Productivity overview">
+            <article class="panel completion-panel">
+              <div class="panel-heading"><div><h2>Productivity overview</h2><p>Your progress across all tasks</p></div><span class="panel-icon">↗</span></div>
+              <div id="analytics-content" class="analytics-content"></div>
+            </article>
+            <article class="panel priority-panel">
+              <div class="panel-heading"><div><h2>Priority breakdown</h2><p>Tasks grouped by priority</p></div><span class="panel-icon">☷</span></div>
+              <div id="priority-content" class="priority-content"></div>
+            </article>
+          </section>
+
+          <section class="workspace-section">
+            <div class="workspace-heading">
+              <div><h2 id="view-title">My tasks</h2><p id="view-description">Keep your day moving forward.</p></div>
+              <div class="view-switch" role="group" aria-label="Task layout">
+                <button class="view-option active" data-view="list" aria-pressed="true" title="List view">☰ <span>List</span></button>
+                <button class="view-option" data-view="board" aria-pressed="false" title="Board view">▦ <span>Board</span></button>
+              </div>
+            </div>
+            <div class="toolbar">
+              <div class="filter-selects">
+                <label class="select-wrap"><span class="sr-only">Filter by status</span><select id="status-filter"><option value="all">All statuses</option><option value="To Do">To do</option><option value="In Progress">In progress</option><option value="Completed">Completed</option></select></label>
+                <label class="select-wrap"><span class="sr-only">Filter by priority</span><select id="priority-filter"><option value="all">All priorities</option><option value="High">High priority</option><option value="Medium">Medium priority</option><option value="Low">Low priority</option></select></label>
+                <label class="select-wrap category-filter-wrap"><span class="sr-only">Filter by category</span><select id="category-filter"><option value="all">All categories</option></select></label>
+              </div>
+              <label class="sort-wrap"><span>Sort by</span><select id="sort-select"><option value="due">Due date</option><option value="priority">Priority</option><option value="created">Date created</option><option value="alphabetical">Alphabetical</option></select></label>
+            </div>
+            <div id="task-list" class="task-list" aria-live="polite"></div>
+            <div id="kanban-board" class="kanban-board" hidden></div>
+          </section>
+        </section>
+
+        <section class="page-view settings-page" id="settings-page" hidden>
+          <div class="page-heading settings-heading"><div><p class="eyebrow">PREFERENCES</p><h1>Settings</h1><p class="subheading">Make TaskFlow work the way you do.</p></div></div>
+          <div class="settings-layout">
+            <article class="panel settings-card">
+              <div class="settings-section"><div class="settings-title"><span class="settings-symbol">◐</span><div><h2>Appearance</h2><p>Choose how TaskFlow looks on this device.</p></div></div><div class="setting-control"><label for="settings-theme">Theme</label><select id="settings-theme"><option value="light">Light</option><option value="dark">Dark</option></select></div></div>
+              <div class="settings-section"><div class="settings-title"><span class="settings-symbol">▤</span><div><h2>Task preferences</h2><p>Set your preferred way to view your work.</p></div></div><div class="setting-control"><label for="settings-view">Default task view</label><select id="settings-view"><option value="list">List view</option><option value="board">Board view</option></select></div></div>
+            </article>
+            <article class="panel settings-card data-card">
+              <div class="settings-section"><div class="settings-title"><span class="settings-symbol">◈</span><div><h2>Your data</h2><p>Your tasks are stored securely in this browser.</p></div></div><div class="data-summary"><span><strong id="settings-task-count">0</strong> tasks</span><span><strong id="settings-category-count">0</strong> categories</span></div>
+                <div class="data-actions"><button class="secondary-button" id="export-tasks">⇩ Export tasks</button><button class="secondary-button" id="import-trigger">⇧ Import JSON</button><input type="file" id="import-file" accept=".json,application/json" hidden></div>
+              </div>
+              <div class="settings-section danger-zone"><div class="settings-title"><span class="settings-symbol danger-symbol">!</span><div><h2>Clear all tasks</h2><p>Permanently remove all tasks from this browser.</p></div></div><button class="danger-button" id="clear-tasks">Clear tasks</button></div>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <dialog class="app-dialog task-dialog" id="task-dialog" aria-labelledby="task-dialog-title">
+      <form id="task-form" novalidate>
+        <div class="dialog-heading"><div><p class="eyebrow">TASK DETAILS</p><h2 id="task-dialog-title">Create a task</h2></div><button type="button" class="icon-button dialog-close" data-close-dialog aria-label="Close dialog">×</button></div>
+        <input type="hidden" id="task-id">
+        <label class="form-field">Task title <span class="required">*</span><input id="task-title" name="title" maxlength="120" required placeholder="What needs to get done?"><small class="field-error" id="title-error"></small></label>
+        <label class="form-field">Description <span class="optional">Optional</span><textarea id="task-description" name="description" rows="3" maxlength="1000" placeholder="Add a few details..."></textarea></label>
+        <div class="form-row">
+          <label class="form-field">Priority<select id="task-priority" name="priority"><option>Medium</option><option>High</option><option>Low</option></select></label>
+          <label class="form-field">Status<select id="task-status" name="status"><option>To Do</option><option>In Progress</option><option>Completed</option></select></label>
+        </div>
+        <div class="form-row">
+          <label class="form-field">Category<input id="task-category" name="category" list="category-options" maxlength="40" placeholder="e.g. Work"><datalist id="category-options"></datalist></label>
+          <label class="form-field">Due date<input id="task-due" name="dueDate" type="date"></label>
+        </div>
+        <p class="form-error" id="form-error" role="alert"></p>
+        <div class="dialog-actions"><button type="button" class="secondary-button" data-close-dialog>Cancel</button><button type="submit" class="primary-button" id="save-task-button">Create task</button></div>
+      </form>
+    </dialog>
+
+    <dialog class="app-dialog details-dialog" id="details-dialog" aria-labelledby="details-title">
+      <div class="dialog-heading"><div><p class="eyebrow">TASK DETAILS</p><h2 id="details-title"></h2></div><button type="button" class="icon-button dialog-close" data-close-dialog aria-label="Close dialog">×</button></div>
+      <p class="details-description" id="details-description"></p><div class="details-meta" id="details-meta"></div>
+      <div class="dialog-actions"><button type="button" class="secondary-button" data-close-dialog>Close</button><button type="button" class="primary-button" id="details-edit">Edit task</button></div>
+    </dialog>
+
+    <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+    <script src="js/app.js" defer></script>
+  </body>
+</html>
